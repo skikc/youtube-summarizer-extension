@@ -137,20 +137,50 @@ button:disabled {
 /* ---- Summary ---- */
 #summary {
   margin: 4px 16px 10px;
-  padding: 12px 14px;
-  border: 1px solid #e2e4ea;
-  border-radius: 8px;
-  background: #fff;
   font-size: 13px;
-  line-height: 1.65;
-  max-height: 340px;
-  overflow-y: auto;
+  line-height: 1.75;
 }
 #summary:empty { display: none; }
-#summary h3 {
-  margin: 0 0 8px;
-  font-size: 14px;
+
+.sum-body {
+  background: #fff;
+  border: 1px solid #e2e4ea;
+  border-radius: 10px;
+  padding: 4px 14px 10px;
 }
+
+.sum-section {
+  margin: 10px 0;
+}
+
+/* 板块标题 */
+.sum-head {
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 0 2px;
+  margin-bottom: 4px;
+  border-bottom: 2px solid #eee;
+}
+.sum-head--overview {
+  color: #1a6ff5;
+  border-bottom-color: #d4e4ff;
+}
+.sum-head--points {
+  color: #e8870a;
+  border-bottom-color: #ffe8cc;
+}
+.sum-head--insight {
+  color: #8b1fc0;
+  border-bottom-color: #f2deff;
+}
+
+/* 正文段落 */
+.sum-body p {
+  margin: 6px 0;
+  color: #333;
+}
+.sum-body p:first-child { margin-top: 2px; }
+.sum-body br + br { display: none; }
 
 /* ---- Transcript (collapsible) ---- */
 .transcript-section {

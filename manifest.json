@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "YT Summary - YouTube 视频总结",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "自动提取 YouTube 视频字幕并生成文章式总结",
   "icons": {
     "16": "icon.svg",

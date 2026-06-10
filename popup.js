@@ -300,23 +300,23 @@ async function summarizeWithDeepSeek(transcript, apiKey) {
           {
             role: "system",
             content: [
-              "请根据以下 YouTube 视频字幕，整理为一篇清晰易读的内容摘要。直接输出正文，不要写开场白。",
+              "请根据以下 YouTube 视频字幕，整理为一篇清晰易读的内容摘要。直接输出正文，不要写开场白。每个板块之间用空行分隔。",
               "",
               "输出结构：",
               "【视频概述】",
-              "用 2-4 句话概括这个视频的核心内容和观点。",
+              "用 2-4 句话简洁概括这个视频的核心内容和观点。段落之间用空行分隔。",
               "",
               "【核心要点】",
-              "逐点展开视频中的关键信息、论点、数据。忠实于原视频内容，不要添加主观解读。使用纯文字段落，不要用列表符号。",
+              "逐点展开视频中的关键信息、论点、数据。每个要点作为一个独立段落，段落之间用空行分隔。忠实于原视频内容，不要添加主观解读。不要使用列表符号。",
               "",
               "【理解与启发】",
               "基于视频内容，提炼出你的整体理解。注意：此处是你的总结提炼，并非视频原话，可能存在理解偏差，读者需自行判断。",
               "",
               "写作规则：",
-              "1. 不使用任何 Markdown 格式符号（** ## - 等），使用纯文字段落",
+              "1. 不使用任何 Markdown 格式符号（** ## - 等），纯文字段落",
               "2. 不写「好的」「以下是总结」「综上所述」等套话",
-              "3. 核心要点部分保持视频原意，不添油加醋、不过度演绎",
-              "4. 语言简洁自然，让读者在几分钟内了解视频全貌"
+              "3. 核心要点部分保持视频原意，不添油加醋",
+              "4. 每个段落控制在 3-5 句话，短小精悍，让读者快速扫读",
             ].join('\n')
           },
           {
@@ -337,6 +337,40 @@ async function summarizeWithDeepSeek(transcript, apiKey) {
     console.error(e);
     return `DeepSeek API 调用失败: ${e.message}\n\n请检查 API Key 是否正确，以及是否有足够余额。`;
   }
+}
+
+// ============ 将 LLM 纯文本渲染为带层次的可读 HTML ============
+function formatSummary(rawText) {
+  // 转义 HTML 特殊字符
+  let text = rawText
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // 板块标题映射
+  const sections = [
+    { marker: /【视频概述】/g, icon: '📺', label: '视频概述', cls: 'overview' },
+    { marker: /【核心要点】/g, icon: '📌', label: '核心要点', cls: 'points' },
+    { marker: /【理解与启发】/g, icon: '💡', label: '理解与启发', cls: 'insight' },
+  ];
+
+  // 将【标题】替换为带样式的 header
+  for (const sec of sections) {
+    text = text.replace(sec.marker,
+      `\n<div class="sum-head sum-head--${sec.cls}">${sec.icon} ${sec.label}</div>\n`);
+  }
+
+  // 按空行切块，每块 → <p>
+  const blocks = text.split(/\n\s*\n/).filter(b => b.trim());
+  const html = blocks.map(block => {
+    block = block.trim();
+    // 已经是 header div 就原样保留
+    if (/^<div class="sum-head/.test(block)) return block;
+    // 普通文本块：单换行 → <br>，包进 <p>
+    return '<p>' + block.replace(/\n/g, '<br>') + '</p>';
+  }).join('\n');
+
+  return '<div class="sum-body">' + html + '</div>';
 }
 
 // === 按钮事件 ===
@@ -370,7 +404,7 @@ document.getElementById('summarizeBtn').addEventListener('click', async () => {
     const apiKey = document.getElementById('apiKey').value.trim();
     const summary = await summarizeWithDeepSeek(transcript, apiKey);
     
-    summaryDiv.innerHTML = `<h3>📄 视频总结文章</h3><div style="white-space: pre-wrap;">${summary}</div>`;
+    summaryDiv.innerHTML = formatSummary(summary);
     status.textContent = '✅ 总结完成！';
     status.className = 'success';
     saveState(summaryDiv.innerHTML);
