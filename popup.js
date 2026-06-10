@@ -17,7 +17,9 @@ function restoreState() {
     if (r.lastTranscript) {
       currentTranscript = r.lastTranscript;
       currentVideoId = r.lastVideoId || '';
-      document.getElementById('transcriptArea').value = r.lastTranscript.substring(0, 8000) + (r.lastTranscript.length > 8000 ? '\n...（已截断）' : '');
+      showTranscriptSection(
+        r.lastTranscript.substring(0, 8000) + (r.lastTranscript.length > 8000 ? '\n...（已截断）' : '')
+      );
     }
     if (r.lastSummary) {
       document.getElementById('summary').innerHTML = r.lastSummary;
@@ -65,6 +67,20 @@ document.getElementById('editApiKeyBtn').addEventListener('click', expandApiKey)
 document.getElementById('apiKey').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') document.getElementById('saveKeyBtn').click();
 });
+
+// ============ 字幕区域折叠 ============
+const transcriptSection = document.getElementById('transcriptSection');
+const transcriptToggle = document.getElementById('transcriptToggle');
+
+transcriptToggle.addEventListener('click', () => {
+  transcriptSection.classList.toggle('collapsed');
+});
+
+function showTranscriptSection(text) {
+  transcriptSection.style.display = '';
+  document.getElementById('transcriptArea').value = text;
+  transcriptSection.classList.remove('collapsed');
+}
 
 async function getTranscript(videoId) {
   return new Promise((resolve) => {
@@ -327,7 +343,9 @@ document.getElementById('summarizeBtn').addEventListener('click', async () => {
     }
 
     currentTranscript = transcript;
-    document.getElementById('transcriptArea').value = transcript.substring(0, 8000) + (transcript.length > 8000 ? '\n...（已截断）' : '');
+    showTranscriptSection(
+      transcript.substring(0, 8000) + (transcript.length > 8000 ? '\n...（已截断）' : '')
+    );
 
     status.textContent = '正在通过 DeepSeek 生成总结...';
     
@@ -357,7 +375,7 @@ document.getElementById('showTranscriptBtn').addEventListener('click', async () 
     const transcript = await getTranscript(currentVideoId);
     if (transcript) {
       currentTranscript = transcript;
-      document.getElementById('transcriptArea').value = transcript;
+      showTranscriptSection(transcript);
       status.textContent = '字幕加载成功';
       status.className = 'success';
       saveState();
