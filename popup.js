@@ -300,7 +300,7 @@ async function summarizeWithDeepSeek(transcript, apiKey) {
           {
             role: "system",
             content: [
-              "请根据以下 YouTube 视频字幕，整理为一篇清晰易读的内容摘要。直接输出正文，不要写开场白。每个板块之间用空行分隔。",
+              "请根据以下 YouTube 视频字幕，用中文整理为一篇清晰易读的内容摘要。直接输出正文，不要写开场白。每个板块之间用空行分隔。",
               "",
               "输出结构：",
               "【视频概述】",
@@ -317,6 +317,7 @@ async function summarizeWithDeepSeek(transcript, apiKey) {
               "2. 不写「好的」「以下是总结」「综上所述」等套话",
               "3. 核心要点部分保持视频原意，不添油加醋",
               "4. 每个段落控制在 3-5 句话，短小精悍，让读者快速扫读",
+              "5. 始终用中文输出，即使用户提供的字幕是英文",
             ].join('\n')
           },
           {
