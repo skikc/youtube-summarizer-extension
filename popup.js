@@ -582,7 +582,7 @@ function formatSummary(rawText) {
   }
 
   // 确保数字序号（1. 2. / 1) 2) / 1、2、）前有空行，独立成段
-  text = text.replace(/(?:^|\n)(\d+)([\.\)、])\s*/g, '\n\n$1$2 ');
+  text = text.replace(/(^|\n)(\d+[\.\)、]\s*)/g, '$1\n$2');
 
   // 按空行切块，每块 → <p>
   const blocks = text.split(/\n\s*\n/).filter(b => b.trim());
