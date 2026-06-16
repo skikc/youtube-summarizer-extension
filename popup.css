@@ -122,7 +122,32 @@ button:disabled {
 }
 .btn-text:hover { background: #eef2ff; }
 
-/* ---- Status ---- */
+/* ---- Options Row ---- */
+.options-row {
+  padding: 0 16px 6px;
+}
+.deep-mode-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #777;
+  cursor: pointer;
+  user-select: none;
+}
+.deep-mode-label input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: #8b1fc0;
+}
+.deep-mode-label:hover { color: #555; }
+
+/* ---- Status (progress) ---- */
+#status.info {
+  background: #e8f0fe;
+  color: #1a56db;
+}
 #status {
   margin: 4px 16px 6px;
   padding: 8px 12px;
